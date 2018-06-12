@@ -1,34 +1,118 @@
-
-function addDetails(){
-    console.log("");
-    if(validateFirstName()){
-        if(validateFulName()){
-            //post it
+function addDetails() {
+    console.log('Add button clicked');
+    // Check if user has entered all required data
+    // If not show error message
+    // Else post it
+    if (validateFirstName()) {
+        if (validateFullName()) {
+            // Do a Post
+            postData();
         }
         else {
-            //display error
+            // Display error message for full Name
+            displayErrorMessageForFullName();
         }
+    } else {
+        // Display error message for first Name
+        displayErrorMessageForFirstName();
+    }
+    if(validateContactNumber()){
+        postData();
     }
     else{
-        //display error
+        displayErrorMessageForContactNumber();
     }
+
 }
 
-function validateFirstName(){
- var firstName=$()
+function  displayErrorMessageForContactNumber(){
+    $('#errForContactNumber').show();
+    $('#errForEmergencyNumber').show();
 }
 
-function validateFulName(){
-return true;
+function displayErrorMessageForFirstName() {
+    $('#errForFirstName').show();
 }
 
-//$(document).ready(function(){
-  //  var date_input=$('input[name="date"]');
-    //var container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent():"body";
-//    date_input.datepicker({
-  //      format: 'mm/dd/yyyy',
-     //   container:container,
-       // todayHighLight: true ,
-   //     autoclose: true ,
-   // })
-//})
+function displayErrorMessageForFullName() {
+    $('#errForFullName').show();
+}
+
+function validateContactNumber(){
+    const contactNumber=$('#contactNumber').val();
+    if(contactNumber.length===10){
+        return true;
+    }
+    return false;
+    const emergencyNumber=$('#emergencyNumber').val();
+    if(contactNumber.length===10){
+        return true;
+    }
+    return false;
+}
+
+function validateFirstName() {
+    const firstName = $('#firstName').val();
+    if (firstName === '') {
+        return false;
+    }
+    return true;
+}
+
+function validateFullName() {
+    const fullName = $('#fullName').val();
+    if (fullName === '') {
+        return false;
+    }
+    return true;
+}
+
+function postData() {
+    const data = {
+        firstName: $('#firstName').val(),
+        fullName: $('#fullName').val()
+    };
+    $.ajax({
+        type: "POST",
+        url: 'https://id-application-form.firebaseio.com/applicationIds.json',
+        data: JSON.stringify(data),
+        success: onPostSuccess,
+        // dataType: dataType
+    });
+}
+
+const onPostSuccess = (data) => {
+    console.log('Posting to firebase success');
+    console.log(data);
+}
+
+$('document').ready(() => {
+    // Initialize
+    $('.span-for-errors').hide();
+    
+});
+
+function validateEmail(emailField){
+    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
+    if (reg.test(emailField.value) == false) 
+    {
+        alert('Invalid Email Address');
+        return false;
+    }
+
+    return true;
+
+}
+
+function numbersOnly(evt)
+{
+   
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+
+}
